@@ -1,0 +1,60 @@
+<header class="week-header">
+  <div class="filler"></div>
+  @for (day of daysToShow(); track $index) {
+    <div
+      class="day"
+      [class.today]="day === todayDateStr()"
+    >
+      <div class="day-num">{{ day | localeDate: 'd' }}</div>
+      <div class="day-day">{{ day | localeDate: 'EEE' }}</div>
+      <div class="day-time">{{ getTotalTimeForDay(day) }}</div>
+    </div>
+  }
+</header>
+
+<div class="grid-container">
+  <!-- Time column - only show every hour -->
+  @for (time of times(); track $index) {
+    @if ($index % FH === 0) {
+      <div
+        class="time"
+        style="grid-row: {{ $index + 1 }}"
+      >
+        {{ time }}
+      </div>
+    }
+  }
+
+  <!-- Grid rows - only show half-hour lines -->
+  @for (row of rowsByNr; track $index) {
+    @if (row % (FH / 2) === 0) {
+      <div
+        class="row"
+        style="grid-row: {{ row + 1 }}"
+      ></div>
+    }
+  }
+
+  <!-- Day columns -->
+  @for (day of daysToShow(); track $index) {
+    <div
+      class="col"
+      style="grid-column: {{ $index + 2 }}"
+    ></div>
+  }
+
+  <!-- Time tracking events -->
+  @for (ev of allEvents(); track ev.id) {
+    <time-tracking-calendar-event
+      [event]="ev"
+      [style]="ev.style"
+      class="time-tracking-event"
+    ></time-tracking-calendar-event>
+  }
+</div>
+
+@if (allEvents().length === 0) {
+  <div class="no-entries">
+    {{ 'F.TIME_TRACKING_CALENDAR.NO_TIME_TRACKED' | translate }}
+  </div>
+}

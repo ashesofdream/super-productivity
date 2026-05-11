@@ -70,6 +70,13 @@ export const APP_ROUTES: Routes = [
     canActivate: [FocusOverlayOpenGuard],
   },
   {
+    path: 'track-review',
+    loadComponent: () =>
+      import('./routes/pages.routes').then((m) => m.TimeTrackingCalendarComponent),
+    data: { page: 'track-review' },
+    canActivate: [FocusOverlayOpenGuard],
+  },
+  {
     path: 'boards',
     loadComponent: () => import('./routes/pages.routes').then((m) => m.BoardsComponent),
     data: { page: 'boards' },

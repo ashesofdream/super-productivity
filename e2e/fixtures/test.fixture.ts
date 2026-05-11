@@ -25,6 +25,7 @@ type TestFixtures = {
   isolatedContext: BrowserContext;
   waitForNav: (selector?: string) => Promise<void>;
   testPrefix: string;
+  mockTime: Date | null;
 };
 
 export const test = base.extend<TestFixtures>({
@@ -47,8 +48,13 @@ export const test = base.extend<TestFixtures>({
   },
 
   // Override page to use isolated context
-  page: async ({ isolatedContext }, use) => {
+  page: async ({ isolatedContext, mockTime }, use) => {
     const page = await isolatedContext.newPage();
+
+    // Install clock before any page navigation if mockTime is set
+    if (mockTime) {
+      await page.clock.install({ time: mockTime });
+    }
 
     // Skip onboarding, hints, and example tasks before the app boots.
     // This runs before any page JavaScript, so Angular sees the flags immediately.
@@ -99,6 +105,11 @@ export const test = base.extend<TestFixtures>({
     // Use worker index and parallel index for unique prefixes
     const prefix = `W${testInfo.workerIndex}-P${testInfo.parallelIndex}`;
     await use(prefix);
+  },
+
+  // Mock time fixture - set to a date to enable clock mocking before page load
+  mockTime: async ({}, use) => {
+    await use(null);
   },
 
   workViewPage: async ({ page, testPrefix }, use) => {

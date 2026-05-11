@@ -1972,6 +1972,18 @@
         "UNTRACKED_TIME": "Untracked time:"
       }
     },
+    "TIME_TRACKING_CALENDAR": {
+      "TITLE": "Time Tracking Calendar",
+      "VIEW_WEEK": "Week",
+      "VIEW_MONTH": "Month",
+      "TOTAL_TIME": "Total Time",
+      "TASKS": "tasks",
+      "NO_TIME_TRACKED": "No time tracked for this period",
+      "LESS": "Less",
+      "MORE": "More",
+      "WEEK_NR": "Week {{nr}}",
+      "LATEST": "Go to latest"
+    },
     "WORKLOG": {
       "CMP": {
         "DAYS_WORKED": "Days, worked:",
@@ -2563,6 +2575,7 @@
     "TOGGLE_SHOW_ISSUE_PANEL": "Show/hide issue provider panel",
     "TOGGLE_SHOW_NOTES": "Show/hide project notes",
     "TOGGLE_TRACK_TIME": "Start/stop tracking time",
+    "TRACK_REVIEW": "Track Review",
     "TRIGGER_SYNC": "Sync!",
     "UNPLAN_ALL_TASKS": "Unplan all tasks",
     "WORKLOG": "Worklog"

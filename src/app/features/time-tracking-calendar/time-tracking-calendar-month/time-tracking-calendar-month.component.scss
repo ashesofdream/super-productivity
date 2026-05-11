@@ -1,0 +1,161 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+@use '../../../../styles/_globals.scss' as *;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.month-grid-container {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: auto repeat(var(--nr-of-weeks), 1fr);
+  gap: 1px;
+  height: 100%;
+}
+
+.weekday-header {
+  text-align: center;
+  font-weight: 600;
+  padding: 8px;
+  background: var(--bg);
+  color: var(--text-color);
+  border-bottom: 1px solid var(--grid-color);
+
+  @include mq(xs, max) {
+    padding: 4px;
+    font-size: 11px;
+  }
+}
+
+.month-day-cell {
+  background: var(--bg);
+  border: 1px solid var(--grid-color);
+  display: flex;
+  flex-direction: column;
+  min-height: 80px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--bg-lighter);
+  }
+
+  &.other-month {
+    opacity: 0.4;
+  }
+
+  &.today {
+    .month-day-number {
+      background: var(--c-primary);
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      @include mq(xs, max) {
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.month-day-header {
+  padding: var(--s);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.month-day-number {
+  font-weight: 600;
+  font-size: 14px;
+
+  @include mq(xs, max) {
+    font-size: 12px;
+  }
+}
+
+.heatmap-cell {
+  flex: 1;
+  margin: var(--s-half);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+
+  // Heat levels
+  &.level-0 {
+    background: var(--bg-lighter);
+  }
+  &.level-1 {
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.2);
+  }
+  &.level-2 {
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.4);
+  }
+  &.level-3 {
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.6);
+  }
+  &.level-4 {
+    background: var(--c-primary);
+    color: white;
+  }
+
+  .time-spent-mini {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .task-count-mini {
+    font-size: 10px;
+    opacity: 0.7;
+  }
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-half);
+  padding: var(--s);
+  font-size: 12px;
+  color: var(--text-color-muted);
+
+  .legend-item {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+
+    &.level-0 {
+      background: var(--bg-lighter);
+      border: 1px solid var(--grid-color);
+    }
+    &.level-1 {
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.2);
+    }
+    &.level-2 {
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.4);
+    }
+    &.level-3 {
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.6);
+    }
+    &.level-4 {
+      background: var(--c-primary);
+    }
+  }
+}
+
+.empty-cell {
+  background: var(--bg-lighter);
+  border: 1px solid var(--grid-color);
+  opacity: 0.3;
+}

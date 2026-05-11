@@ -50,6 +50,7 @@ import { TaskSharedActions } from '../../../root-store/meta/task-shared.actions'
 import {
   TimeTrackingActions,
   syncTimeSpent,
+  recordTaskTimeEntry,
 } from '../../time-tracking/store/time-tracking.actions';
 import { TaskLog } from '../../../core/log';
 import { devError } from '../../../util/dev-error';
@@ -772,5 +773,28 @@ export const taskReducer = createReducer<TaskState>(
       ...state,
       ids: [...validTaskIds, ...state.ids.filter((id) => !taskIds.includes(id))],
     };
+  }),
+
+  // TIME ENTRIES
+  // ------------
+  on(recordTaskTimeEntry, (state, { taskId, dateStr, entry }) => {
+    const task = state.entities[taskId];
+    if (!task) return state;
+
+    const existingEntries = task.timeEntries?.[dateStr] || [];
+    const updatedEntries = [...existingEntries, entry];
+
+    return taskAdapter.updateOne(
+      {
+        id: taskId,
+        changes: {
+          timeEntries: {
+            ...task.timeEntries,
+            [dateStr]: updatedEntries,
+          },
+        },
+      },
+      state,
+    );
   }),
 );

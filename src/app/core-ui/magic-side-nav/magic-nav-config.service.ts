@@ -404,6 +404,17 @@ export class MagicNavConfigService {
       });
     }
 
+    // Track Review - always show if time tracking is enabled
+    if (this._configService.appFeatures().isTimeTrackingEnabled) {
+      items.push({
+        type: 'route',
+        id: 'track-review',
+        label: T.MH.TRACK_REVIEW,
+        icon: 'history',
+        route: '/track-review',
+      });
+    }
+
     if (this.isBoardsEnabled()) {
       items.push({
         type: 'route',

@@ -7,6 +7,7 @@ import { INBOX_PROJECT } from '../../project/project.const';
 import {
   TimeTrackingActions,
   syncTimeSpent,
+  recordTaskTimeEntry,
 } from '../../time-tracking/store/time-tracking.actions';
 import { _resetDevErrorState } from '../../../util/dev-error';
 import { PlannerActions } from '../../planner/store/planner.actions';
@@ -1074,6 +1075,131 @@ describe('Task Reducer', () => {
       });
 
       expect(() => taskReducer(stateWithUndefined, action)).not.toThrow();
+    });
+  });
+
+  describe('recordTaskTimeEntry', () => {
+    it('should add time entry to task with empty timeEntries', () => {
+      const task = createTask('task-time', { timeEntries: undefined });
+      const state: TaskState = {
+        ...initialTaskState,
+        ids: ['task-time'],
+        entities: { 'task-time': task },
+      };
+
+      const entry = { s: 1000, e: 2000 };
+      const action = recordTaskTimeEntry({
+        taskId: 'task-time',
+        dateStr: '2026-05-12',
+        entry,
+      });
+
+      const result = taskReducer(state, action);
+
+      expect(result.entities['task-time']!.timeEntries).toEqual({
+        '2026-05-12': [entry],
+      });
+    });
+
+    it('should append time entry to existing entries for same date', () => {
+      const existingEntry = { s: 1000, e: 2000 };
+      const task = createTask('task-time', {
+        timeEntries: { '2026-05-12': [existingEntry] },
+      });
+      const state: TaskState = {
+        ...initialTaskState,
+        ids: ['task-time'],
+        entities: { 'task-time': task },
+      };
+
+      const newEntry = { s: 3000, e: 4000 };
+      const action = recordTaskTimeEntry({
+        taskId: 'task-time',
+        dateStr: '2026-05-12',
+        entry: newEntry,
+      });
+
+      const result = taskReducer(state, action);
+
+      expect(result.entities['task-time']!.timeEntries!['2026-05-12']).toEqual([
+        existingEntry,
+        newEntry,
+      ]);
+    });
+
+    it('should create new date entry if date not exists', () => {
+      const existingEntry = { s: 1000, e: 2000 };
+      const task = createTask('task-time', {
+        timeEntries: { '2026-05-11': [existingEntry] },
+      });
+      const state: TaskState = {
+        ...initialTaskState,
+        ids: ['task-time'],
+        entities: { 'task-time': task },
+      };
+
+      const newEntry = { s: 3000, e: 4000 };
+      const action = recordTaskTimeEntry({
+        taskId: 'task-time',
+        dateStr: '2026-05-12',
+        entry: newEntry,
+      });
+
+      const result = taskReducer(state, action);
+
+      expect(result.entities['task-time']!.timeEntries!['2026-05-11']).toEqual([
+        existingEntry,
+      ]);
+      expect(result.entities['task-time']!.timeEntries!['2026-05-12']).toEqual([
+        newEntry,
+      ]);
+    });
+
+    it('should silently skip if task not found (deleted)', () => {
+      const entry = { s: 1000, e: 2000 };
+      const action = recordTaskTimeEntry({
+        taskId: 'non-existent',
+        dateStr: '2026-05-12',
+        entry,
+      });
+
+      const result = taskReducer(stateWithTasks, action);
+
+      // Should return same state since task doesn't exist
+      expect(result).toBe(stateWithTasks);
+    });
+
+    it('should preserve immutability', () => {
+      const task = createTask('task-time', {
+        timeEntries: { '2026-05-12': [{ s: 1000, e: 2000 }] },
+      });
+      const state: TaskState = {
+        ...initialTaskState,
+        ids: ['task-time'],
+        entities: { 'task-time': task },
+      };
+
+      const originalEntries = task.timeEntries!;
+      const action = recordTaskTimeEntry({
+        taskId: 'task-time',
+        dateStr: '2026-05-12',
+        entry: { s: 3000, e: 4000 },
+      });
+
+      const result = taskReducer(state, action);
+
+      // Original state should not be mutated
+      expect(task.timeEntries!['2026-05-12']).toEqual([{ s: 1000, e: 2000 }]);
+      // Result should have new entry appended
+      expect(result.entities['task-time']!.timeEntries!['2026-05-12']).toEqual([
+        { s: 1000, e: 2000 },
+        { s: 3000, e: 4000 },
+      ]);
+      // Should be different references
+      expect(result.entities['task-time']!.timeEntries).not.toBe(originalEntries);
+      expect(result.entities['task-time']!.timeEntries!['2026-05-12']).not.toBe(
+        originalEntries['2026-05-12'],
+      );
     });
   });
 });

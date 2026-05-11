@@ -1,0 +1,92 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+@use '../../../styles/_globals.scss' as *;
+
+:host {
+  display: block;
+  height: 100%;
+  --nr-of-weeks: 6;
+}
+
+.calendar-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--s);
+  padding: var(--s) var(--s2);
+  background: var(--bg);
+  border-bottom: 1px solid var(--grid-color);
+
+  @include mq(xs, max) {
+    padding: var(--s-half) var(--s);
+    gap: var(--s-half);
+  }
+}
+
+.week-month-selector {
+  display: flex;
+  gap: 4px;
+
+  button {
+    &.active {
+      background: var(--c-primary);
+      color: white;
+    }
+  }
+}
+
+.date-nav-group {
+  display: flex;
+  gap: 4px;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 16px;
+  flex: 1;
+  text-align: center;
+
+  @include mq(xs, max) {
+    font-size: 14px;
+  }
+}
+
+.total-time {
+  display: flex;
+  align-items: center;
+  gap: var(--s-half);
+  font-size: 14px;
+
+  .label {
+    color: var(--text-color-muted);
+  }
+
+  .value {
+    font-weight: 600;
+    color: var(--c-primary);
+  }
+
+  @include mq(xs, max) {
+    font-size: 12px;
+  }
+}
+
+.calendar-content {
+  height: calc(100vh - 120px);
+  overflow: auto;
+
+  @include mq(xs, max) {
+    height: calc(100vh - 150px);
+  }
+}
+
+.scroll-wrapper {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  &[data-horizontal-scroll] {
+    > :first-child {
+      width: fit-content;
+      min-width: 100%;
+    }
+  }
+}

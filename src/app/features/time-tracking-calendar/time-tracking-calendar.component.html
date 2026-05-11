@@ -1,0 +1,72 @@
+<header class="calendar-nav-controls">
+  <div class="week-month-selector">
+    <button
+      mat-icon-button
+      [class.active]="!isMonthView()"
+      (click)="selectTimeView('week')"
+      [matTooltip]="'F.TIME_TRACKING_CALENDAR.VIEW_WEEK' | translate"
+    >
+      <mat-icon>view_week</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      [class.active]="isMonthView()"
+      (click)="selectTimeView('month')"
+      [matTooltip]="'F.TIME_TRACKING_CALENDAR.VIEW_MONTH' | translate"
+    >
+      <mat-icon>calendar_month</mat-icon>
+    </button>
+  </div>
+
+  <div class="date-nav-group">
+    <button
+      mat-icon-button
+      (click)="goToPreviousPeriod()"
+      [matTooltip]="'G.PREVIOUS' | translate"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="goToLatest()"
+      [matTooltip]="'F.TIME_TRACKING_CALENDAR.LATEST' | translate"
+    >
+      <mat-icon>history</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="goToNextPeriod()"
+      [matTooltip]="'G.NEXT' | translate"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <div class="title">{{ headerTitle() }}</div>
+
+  <div class="total-time">
+    <span class="label">{{ 'F.TIME_TRACKING_CALENDAR.TOTAL_TIME' | translate }}:</span>
+    <span class="value">{{ totalTimeFormatted() }}</span>
+  </div>
+</header>
+
+<div
+  class="calendar-content"
+  [class.month-view]="isMonthView()"
+>
+  @if (isMonthView()) {
+    <time-tracking-calendar-month
+      [daysData]="dayDataMap()"
+      [daysToShow]="daysToShow()"
+      [weeksToShow]="weeksToShow()"
+      [firstDayOfWeek]="firstDayOfWeek()"
+    ></time-tracking-calendar-month>
+  } @else {
+    <time-tracking-calendar-week
+      [daysData]="dayDataMap()"
+      [daysToShow]="daysToShow()"
+      [todayDateStr]="_todayDateStr()"
+      [allTasks]="allTasks()"
+    ></time-tracking-calendar-week>
+  }
+</div>

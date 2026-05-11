@@ -1,0 +1,41 @@
+<div class="month-grid-container">
+  <!-- Weekday headers -->
+  @for (header of weekdayHeaders(); track $index) {
+    <div class="weekday-header">{{ header }}</div>
+  }
+
+  <!-- Day cells -->
+  @for (day of daysToShow(); track $index) {
+    @let weekIndex = getWeekIndex($index);
+    @let dayIndex = getDayIndex($index);
+    @if (weekIndex < weeksToShow()) {
+      <div
+        class="month-day-cell {{ getDayClass(day) }}"
+        [attr.data-day]="day"
+        [matTooltip]="getTooltipText(day)"
+        style="grid-row: {{ weekIndex + 2 }}; grid-column: {{ dayIndex + 1 }}"
+      >
+        <div class="month-day-header">
+          <span class="month-day-number">{{ day | localeDate: 'd' }}</span>
+        </div>
+        <div class="heatmap-cell level-{{ getLevel(day) }}">
+          @if (getDayData(day); as dayData) {
+            <div class="time-spent-mini">
+              {{ formatTimeShort(dayData.totalTimeSpent) }}
+            </div>
+            <div class="task-count-mini">{{ getTaskCount(dayData) }} tasks</div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>
+
+<!-- Heatmap legend -->
+<div class="heatmap-legend">
+  <span>{{ 'F.TIME_TRACKING_CALENDAR.LESS' | translate }}</span>
+  @for (level of [0, 1, 2, 3, 4]; track level) {
+    <div class="legend-item level-{{ level }}"></div>
+  }
+  <span>{{ 'F.TIME_TRACKING_CALENDAR.MORE' | translate }}</span>
+</div>

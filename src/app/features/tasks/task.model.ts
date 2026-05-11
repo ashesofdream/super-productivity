@@ -3,6 +3,7 @@ import { EntityState } from '@ngrx/entity';
 import { TaskAttachment } from './task-attachment/task-attachment.model';
 // Import the unified Task type from plugin-api
 import { Task as PluginTask } from '@super-productivity/plugin-api';
+import { TaskTimeEntriesByDate } from '../time-tracking/time-tracking.model';
 
 export enum HideSubTasksMode {
   // Show is undefined
@@ -140,6 +141,13 @@ export interface TaskCopy
   remindAt?: number;
   repeatCfgId?: string;
   _hideSubTasksMode?: HideSubTasksMode;
+
+  /**
+   * Time entries - grouped by date
+   * Records precise start/end times for each tracking session
+   * Used by Time Tracking Calendar to display exact time periods
+   */
+  timeEntries?: TaskTimeEntriesByDate;
 }
 
 /**

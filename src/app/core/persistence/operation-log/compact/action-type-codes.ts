@@ -104,6 +104,7 @@ export const ACTION_TYPE_TO_CODE: Record<ActionType, string> = {
   [ActionType.TIME_TRACKING_SYNC_SESSIONS]: 'KS',
   [ActionType.TIME_TRACKING_SYNC_TIME_SPENT]: 'KT',
   [ActionType.TIME_TRACKING_UPDATE_CONTEXT_DATA]: 'KW',
+  [ActionType.TIME_TRACKING_RECORD_TIME_ENTRY]: 'KE',
 
   // Planner actions (L)
   [ActionType.PLANNER_UPSERT_DAY]: 'LU',

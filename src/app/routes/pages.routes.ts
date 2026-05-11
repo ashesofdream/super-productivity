@@ -3,6 +3,7 @@ export { SearchPageComponent } from '../pages/search-page/search-page.component'
 export { ScheduledListPageComponent } from '../pages/scheduled-list-page/scheduled-list-page.component';
 export { PlannerComponent } from '../features/planner/planner.component';
 export { ScheduleComponent } from '../features/schedule/schedule/schedule.component';
+export { TimeTrackingCalendarComponent } from '../features/time-tracking-calendar/time-tracking-calendar.component';
 export { BoardsComponent } from '../features/boards/boards.component';
 export { HabitPageComponent } from '../pages/habit-page/habit-page.component';
 export { DonatePageComponent } from '../pages/donate-page/donate-page.component';

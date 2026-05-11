@@ -1,0 +1,50 @@
+@use '../../../../styles/_globals.scss' as *;
+
+:host {
+  display: block;
+  overflow: hidden;
+  // Minimum height to ensure task name is visible (at least 2 rows = 10 minutes)
+  min-height: calc(var(--schedule-row-height, 9px) * 2);
+  position: relative;
+  z-index: 1;
+  transition: z-index 0.1s ease;
+
+  &:hover {
+    z-index: 10;
+    background: var(--bg-lightest);
+    box-shadow: var(--whiteframe-shadow-2dp);
+  }
+}
+
+.event-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2px 4px;
+  min-height: 18px; // Ensure minimum height for content
+}
+
+.event-title {
+  font-weight: 500;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-height: 14px; // Ensure at least one line is visible
+}
+
+.event-time {
+  font-size: 9px;
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+.event-color-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 2px 0 0 2px;
+}

@@ -1,6 +1,14 @@
 import { nanoid } from 'nanoid';
 import typia from 'typia';
-import { distinctUntilChanged, first, map, take, withLatestFrom } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  first,
+  map,
+  pairwise,
+  startWith,
+  take,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { computed, effect, inject, Injectable, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
@@ -89,7 +97,9 @@ import {
   TimeTrackingActions,
   syncTimeSpent,
   syncTimeTracking,
+  recordTaskTimeEntry,
 } from '../time-tracking/store/time-tracking.actions';
+import { TaskTimeEntry } from '../time-tracking/time-tracking.model';
 import { selectTimeTrackingState } from '../time-tracking/store/time-tracking.selectors';
 import { ArchiveService } from '../archive/archive.service';
 import { TaskArchiveService } from '../archive/task-archive.service';
@@ -204,6 +214,9 @@ export class TaskService {
     { contextType: 'TAG' | 'PROJECT'; contextId: string; date: string }
   > = new Map();
 
+  // Track start time for recording time entries
+  private _currentTrackingStartTime: number | null = null;
+
   constructor() {
     document.addEventListener(
       'focus',
@@ -226,6 +239,11 @@ export class TaskService {
       )
       .subscribe(([tick, currentTask, isImportInProgress]) => {
         if (currentTask?.id && !isImportInProgress) {
+          // Record tracking start time when tracking begins
+          if (this._currentTrackingStartTime === null) {
+            this._currentTrackingStartTime = tick.timestamp - tick.duration;
+          }
+
           // Update local state immediately (existing behavior)
           this.addTimeSpent(currentTask, tick.duration, tick.date);
 
@@ -242,10 +260,41 @@ export class TaskService {
         }
       });
 
-    // Flush accumulated time when task stops (currentTaskId becomes null or changes)
-    this.currentTaskId$.subscribe(() => {
-      this._flushAccumulatedTimeSpent();
-    });
+    // Record time entry when task stops or changes
+    // Use pairwise to get the previous taskId before the change
+    this.currentTaskId$
+      .pipe(
+        // Start with null to have a complete pairwise sequence
+        startWith(null as string | null),
+        pairwise(),
+      )
+      .subscribe(([previousTaskId, newTaskId]) => {
+        // If we were tracking a task and it stopped or changed, record the time entry
+        if (previousTaskId && this._currentTrackingStartTime !== null) {
+          const entry: TaskTimeEntry = {
+            s: this._currentTrackingStartTime,
+            e: Date.now(),
+          };
+          const dateStr = this._dateService.todayStr();
+          this._store.dispatch(
+            recordTaskTimeEntry({
+              taskId: previousTaskId,
+              dateStr,
+              entry,
+            }),
+          );
+        }
+
+        // Reset tracking state for new task
+        if (newTaskId) {
+          this._currentTrackingStartTime = Date.now();
+        } else {
+          this._currentTrackingStartTime = null;
+        }
+
+        // Flush accumulated time
+        this._flushAccumulatedTimeSpent();
+      });
 
     effect(() => {
       if (!this.isTimeTrackingEnabled() && untracked(this.currentTaskId) != null) {

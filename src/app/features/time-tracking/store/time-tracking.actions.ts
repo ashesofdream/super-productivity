@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { createAction, createActionGroup, props } from '@ngrx/store';
 import { WorkContextType } from '../../work-context/work-context.model';
-import { TimeTrackingState, TTWorkContextData } from '../time-tracking.model';
+import {
+  TimeTrackingState,
+  TTWorkContextData,
+  TaskTimeEntry,
+} from '../time-tracking.model';
 import { Task } from '../../tasks/task.model';
 import { PersistentActionMeta } from '../../../op-log/core/persistent-action.interface';
 import { OpType } from '../../../op-log/core/operation.types';
@@ -73,6 +77,24 @@ export const TimeTrackingActions = createActionGroup({
 export const syncTimeSpent = createAction(
   '[TimeTracking] Sync time spent',
   (actionProps: { taskId: string; date: string; duration: number }) => ({
+    ...actionProps,
+    meta: {
+      isPersistent: true,
+      entityType: 'TASK',
+      entityId: actionProps.taskId,
+      opType: OpType.Update,
+    } satisfies PersistentActionMeta,
+  }),
+);
+
+/**
+ * Record a task time entry with precise start and end times.
+ * Dispatched when a task stops being tracked (currentTaskId changes or becomes null).
+ * Used by Time Tracking Calendar to display exact time periods.
+ */
+export const recordTaskTimeEntry = createAction(
+  '[TimeTracking] Record Task Time Entry',
+  (actionProps: { taskId: string; dateStr: string; entry: TaskTimeEntry }) => ({
     ...actionProps,
     meta: {
       isPersistent: true,

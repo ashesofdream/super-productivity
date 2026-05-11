@@ -1,0 +1,153 @@
+@use 'angular-material-css-vars' as mat-css-vars;
+@use '../../../../styles/_globals.scss' as *;
+
+:host {
+  --schedule-time-width: 3em;
+  --schedule-day-width: 180px;
+  --schedule-row-height: 9px;
+  --schedule-row-height-mobile: 7px;
+  --schedule-fr: 12;
+  --schedule-total-rows: calc(24 * var(--schedule-fr));
+
+  display: block;
+  height: 100%;
+
+  @include mq(md, max) {
+    --schedule-day-width: 150px;
+  }
+
+  @include mq(xs, max) {
+    --schedule-day-width: 120px;
+    --schedule-row-height: var(--schedule-row-height-mobile);
+  }
+}
+
+.week-header {
+  display: grid;
+  grid-template-columns: var(--schedule-time-width) repeat(var(--nr-of-days), 1fr);
+  place-content: start;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  background: var(--bg-lighter);
+  border-bottom: 1px solid var(--grid-color);
+
+  .filler {
+    background: var(--bg-lighter);
+  }
+
+  .day {
+    line-height: 32px;
+    font-size: 14px;
+    border-left: 1px solid var(--grid-color);
+
+    @include mq(xs, max) {
+      font-size: 12px;
+      line-height: 24px;
+    }
+
+    &.today {
+      color: var(--c-primary);
+      font-weight: 600;
+    }
+
+    .day-num {
+      font-weight: 600;
+      display: inline;
+      padding-right: 4px;
+    }
+
+    .day-day {
+      display: inline;
+      font-weight: 400;
+    }
+
+    .day-time {
+      font-size: 11px;
+      color: var(--text-color-muted);
+      line-height: 1.2;
+    }
+  }
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: var(--schedule-time-width) repeat(var(--nr-of-days), 1fr);
+  grid-template-rows: repeat(var(--schedule-total-rows), var(--schedule-row-height));
+  grid-auto-flow: column;
+  place-content: start;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.time {
+  grid-column: 1;
+  align-self: end;
+  font-size: 80%;
+  position: relative;
+  top: -0.7em;
+  color: var(--text-color-muted);
+  padding-right: 6px;
+  line-height: 1.2;
+  text-align: right;
+
+  &:first-of-type {
+    height: 5px;
+  }
+}
+
+.row {
+  grid-column: 2 / -1;
+  border-top: 1px solid var(--grid-color);
+  pointer-events: none;
+}
+
+.col {
+  border-left: 1px solid var(--grid-color);
+  grid-row: 1 / span var(--schedule-total-rows);
+  grid-column: span 1;
+}
+
+.time-tracking-event {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 1px;
+  padding: 2px 4px;
+  font-size: 11px;
+  text-align: left;
+  background: mat-css-vars.mat-css-color-primary($opacity: 0.15);
+  border-left: 3px solid var(--c-primary);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.25);
+  }
+
+  .event-title {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .event-time {
+    font-size: 10px;
+    color: var(--text-color-muted);
+  }
+}
+
+.no-entries {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: var(--text-color-muted);
+  font-style: italic;
+}

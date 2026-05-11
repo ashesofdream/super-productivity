@@ -203,6 +203,7 @@ export class PageTitleComponent {
     [/scheduled-list$/, T.MH.ALL_PLANNED_LIST],
     [/donate$/, T.MH.DONATE],
     [/config$/, T.PS.GLOBAL_SETTINGS],
+    [/track-review$/, T.MH.TRACK_REVIEW],
   ];
 
   private _routeTitleKey = computed(

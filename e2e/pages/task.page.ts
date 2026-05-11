@@ -228,8 +228,13 @@ export class TaskPage extends BasePage {
   async toggleTaskTimeTracking(task: Locator): Promise<void> {
     await task.waitFor({ state: 'visible' });
     await task.hover();
-    const playBtn = task.locator('.play-btn, .pause-btn').first();
-    await playBtn.waitFor({ state: 'visible', timeout: 3000 });
+    // Wait for hover controls to appear
+    await this.page.waitForTimeout(100);
+    // The play button has class 'start-task-btn', pause button doesn't have specific class but contains mat-icon with 'pause'
+    const playBtn = task
+      .locator('button.start-task-btn, button:has(mat-icon:text("pause"))')
+      .first();
+    await playBtn.waitFor({ state: 'visible', timeout: 5000 });
     await playBtn.click();
     await waitForAngularStability(this.page);
   }

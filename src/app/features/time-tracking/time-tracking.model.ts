@@ -16,6 +16,24 @@ export type TTDateMap<T> = Omit<
 >;
 
 /**
+ * Single task time entry record
+ * Records precise start and end times for a task tracking session
+ */
+export interface TaskTimeEntry {
+  /** Start timestamp (ms) */
+  s: number;
+  /** End timestamp (ms) */
+  e: number;
+}
+
+/**
+ * Task time entries grouped by date
+ * key: dateStr (YYYY-MM-DD)
+ * value: array of time entries
+ */
+export type TaskTimeEntriesByDate = Record<string, TaskTimeEntry[]>;
+
+/**
  * Time Tracking work context data
  * Uses shortened property names to reduce storage size
  * s: start time
