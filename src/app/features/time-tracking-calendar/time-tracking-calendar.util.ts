@@ -16,6 +16,27 @@ export const calculateHeatLevel = (timeSpent: number, maxTimeSpent: number): num
 };
 
 /**
+ * Calculate event heat level (0-4) based on duration
+ * Used for individual event items in month view
+ */
+export const calculateEventLevel = (durationMs: number): number => {
+  const hours = durationMs / (1000 * 60 * 60);
+  if (hours < 0.5) return 1; // < 30 min
+  if (hours < 1) return 2; // < 1 hour
+  if (hours < 2) return 3; // < 2 hours
+  return 4; // >= 2 hours
+};
+
+/**
+ * Format event start time (e.g., "9:30", "14:00")
+ */
+export const formatEventTime = (startHours: number): string => {
+  const hours = Math.floor(startHours);
+  const minutes = Math.round((startHours % 1) * 60);
+  return `${hours}:${minutes.toString().padStart(2, '0')}`;
+};
+
+/**
  * Format milliseconds to human readable time string
  */
 export const formatMsToTimeString = (ms: number): string => {
@@ -159,9 +180,14 @@ export const mapTasksToDayDataMap = (
 
       const dayData = dayDataMap.get(dateStr)!;
 
+      // Add time spent and events
       for (const entry of entries) {
         dayData.totalTimeSpent += entry.e - entry.s;
       }
+
+      // Map entries to events (dayIndex 0 for month view, not used for positioning)
+      const events = mapTimeEntriesToEvents(task, dateStr, 0);
+      dayData.events.push(...events);
     }
   }
 

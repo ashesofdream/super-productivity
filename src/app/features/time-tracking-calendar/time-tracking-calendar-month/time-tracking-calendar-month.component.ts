@@ -11,8 +11,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DateTimeFormatService } from 'src/app/core/date-time-format/date-time-format.service';
 import { safeFormatDate } from 'src/app/util/safe-format-date';
 import { parseDbDateStr } from 'src/app/util/parse-db-date-str';
-import { TimeTrackingDayData } from '../time-tracking-calendar.model';
-import { formatMsToShortTimeString } from '../time-tracking-calendar.util';
+import { TimeTrackingDayData, TimeTrackingEvent } from '../time-tracking-calendar.model';
+import {
+  formatMsToShortTimeString,
+  calculateEventLevel,
+  formatEventTime,
+} from '../time-tracking-calendar.util';
 
 @Component({
   selector: 'time-tracking-calendar-month',
@@ -106,4 +110,18 @@ export class TimeTrackingCalendarMonthComponent {
     const taskIds = new Set(dayData.events.map((e) => e.task.id));
     return taskIds.size;
   }
+
+  getEvents(day: string): TimeTrackingEvent[] {
+    return this.daysData().get(day)?.events ?? [];
+  }
+
+  getEventLevel(event: TimeTrackingEvent): number {
+    return calculateEventLevel(event.timeSpent);
+  }
+
+  getEventTime(event: TimeTrackingEvent): string {
+    return formatEventTime(event.startHours);
+  }
+
+  readonly maxVisibleEvents = 4;
 }

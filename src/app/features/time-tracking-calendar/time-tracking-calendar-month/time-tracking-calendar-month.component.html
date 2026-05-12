@@ -12,18 +12,31 @@
       <div
         class="month-day-cell {{ getDayClass(day) }}"
         [attr.data-day]="day"
-        [matTooltip]="getTooltipText(day)"
         style="grid-row: {{ weekIndex + 2 }}; grid-column: {{ dayIndex + 1 }}"
       >
         <div class="month-day-header">
           <span class="month-day-number">{{ day | localeDate: 'd' }}</span>
-        </div>
-        <div class="heatmap-cell level-{{ getLevel(day) }}">
           @if (getDayData(day); as dayData) {
-            <div class="time-spent-mini">
-              {{ formatTimeShort(dayData.totalTimeSpent) }}
-            </div>
-            <div class="task-count-mini">{{ getTaskCount(dayData) }} tasks</div>
+            <span class="day-total-time">{{
+              formatTimeShort(dayData.totalTimeSpent)
+            }}</span>
+          }
+        </div>
+        <div class="day-events">
+          @for (event of getEvents(day); track event.id; let i = $index) {
+            @if (i < maxVisibleEvents) {
+              <div
+                class="event-item level-{{ getEventLevel(event) }}"
+                [matTooltip]="event.task.title"
+                matTooltipPosition="above"
+              >
+                <span class="event-time">{{ getEventTime(event) }}</span>
+                <span class="event-title">{{ event.task.title }}</span>
+              </div>
+            }
+          }
+          @if (getEvents(day).length > maxVisibleEvents) {
+            <div class="more-events">+{{ getEvents(day).length - maxVisibleEvents }}</div>
           }
         </div>
       </div>
@@ -34,7 +47,7 @@
 <!-- Heatmap legend -->
 <div class="heatmap-legend">
   <span>{{ 'F.TIME_TRACKING_CALENDAR.LESS' | translate }}</span>
-  @for (level of [0, 1, 2, 3, 4]; track level) {
+  @for (level of [1, 2, 3, 4]; track level) {
     <div class="legend-item level-{{ level }}"></div>
   }
   <span>{{ 'F.TIME_TRACKING_CALENDAR.MORE' | translate }}</span>

@@ -33,7 +33,7 @@
   border: 1px solid var(--grid-color);
   display: flex;
   flex-direction: column;
-  min-height: 80px;
+  min-height: 100px;
   position: relative;
   cursor: pointer;
   transition: background 0.15s ease;
@@ -67,58 +67,91 @@
 }
 
 .month-day-header {
-  padding: var(--s);
+  padding: 4px 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--grid-color);
 }
 
 .month-day-number {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
 
   @include mq(xs, max) {
     font-size: 12px;
   }
 }
 
-.heatmap-cell {
+.day-total-time {
+  font-size: 10px;
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
+.day-events {
   flex: 1;
-  margin: var(--s-half);
-  border-radius: 4px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
+  padding: 2px;
+  overflow-y: auto;
+  gap: 1px;
+}
 
-  // Heat levels
-  &.level-0 {
-    background: var(--bg-lighter);
-  }
+.event-item {
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  border-radius: 2px;
+  border-left: 3px solid var(--c-primary);
+  font-size: 10px;
+  cursor: pointer;
+  min-height: 18px;
+
+  // Heat levels based on duration
   &.level-1 {
-    background: mat-css-vars.mat-css-color-primary($opacity: 0.2);
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.15);
+    border-left-color: mat-css-vars.mat-css-color-primary($opacity: 0.6);
   }
   &.level-2 {
-    background: mat-css-vars.mat-css-color-primary($opacity: 0.4);
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.25);
+    border-left-color: mat-css-vars.mat-css-color-primary($opacity: 0.8);
   }
   &.level-3 {
-    background: mat-css-vars.mat-css-color-primary($opacity: 0.6);
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.35);
+    border-left-color: var(--c-primary);
   }
   &.level-4 {
-    background: var(--c-primary);
-    color: white;
+    background: mat-css-vars.mat-css-color-primary($opacity: 0.5);
+    border-left-color: var(--c-primary);
   }
 
-  .time-spent-mini {
-    font-size: 12px;
-    font-weight: 600;
+  &:hover {
+    filter: brightness(1.1);
   }
 
-  .task-count-mini {
-    font-size: 10px;
-    opacity: 0.7;
+  .event-time {
+    color: var(--text-color-muted);
+    min-width: 32px;
+    margin-right: 4px;
+    font-size: 9px;
+    font-weight: 500;
   }
+
+  .event-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+}
+
+.more-events {
+  font-size: 9px;
+  color: var(--text-color-muted);
+  padding: 2px 4px;
+  text-align: center;
 }
 
 .heatmap-legend {
@@ -135,21 +168,17 @@
     height: 12px;
     border-radius: 2px;
 
-    &.level-0 {
-      background: var(--bg-lighter);
-      border: 1px solid var(--grid-color);
-    }
     &.level-1 {
-      background: mat-css-vars.mat-css-color-primary($opacity: 0.2);
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.15);
     }
     &.level-2 {
-      background: mat-css-vars.mat-css-color-primary($opacity: 0.4);
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.25);
     }
     &.level-3 {
-      background: mat-css-vars.mat-css-color-primary($opacity: 0.6);
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.35);
     }
     &.level-4 {
-      background: var(--c-primary);
+      background: mat-css-vars.mat-css-color-primary($opacity: 0.5);
     }
   }
 }
