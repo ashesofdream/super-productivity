@@ -27,6 +27,7 @@
             @if (i < maxVisibleEvents) {
               <div
                 class="event-item level-{{ getEventLevel(event) }}"
+                (click)="onEventClick(event)"
                 [matTooltip]="event.task.title"
                 matTooltipPosition="above"
               >

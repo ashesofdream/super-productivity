@@ -23,6 +23,7 @@ const BASE_FEATURES: AppFeaturesConfig = {
   isEnableUserProfiles: false,
   isHabitsEnabled: false,
   isFinishDayEnabled: false,
+  isTrackReviewEnabled: false,
 };
 
 export const ONBOARDING_PRESETS: OnboardingPreset[] = [
@@ -46,6 +47,7 @@ export const ONBOARDING_PRESETS: OnboardingPreset[] = [
       isTimeTrackingEnabled: true,
       isPlannerEnabled: true,
       isFinishDayEnabled: true,
+      isTrackReviewEnabled: true,
       isScheduleDayPanelEnabled: true,
       isProjectNotesEnabled: true,
     },
@@ -66,6 +68,7 @@ export const ONBOARDING_PRESETS: OnboardingPreset[] = [
       isIssuesPanelEnabled: true,
       isProjectNotesEnabled: true,
       isHabitsEnabled: true,
+      isTrackReviewEnabled: true,
     },
   },
 ];

@@ -21,6 +21,7 @@ export type AppFeaturesConfig = Readonly<{
   isEnableUserProfiles: boolean;
   isHabitsEnabled: boolean;
   isFinishDayEnabled: boolean;
+  isTrackReviewEnabled: boolean;
 }>;
 
 export type MiscConfig = Readonly<{

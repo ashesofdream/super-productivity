@@ -108,6 +108,9 @@ export class MagicNavConfigService {
   private readonly isSearchEnabled = computed(
     () => this._configService.appFeatures().isSearchEnabled,
   );
+  private readonly isTrackReviewEnabled = computed(
+    () => this._configService.appFeatures().isTrackReviewEnabled,
+  );
   readonly areInitialTreesReady = computed(() => {
     const visibleProjects = this._visibleProjects();
     const tags = this._tags();
@@ -404,14 +407,15 @@ export class MagicNavConfigService {
       });
     }
 
-    // Track Review - always show if time tracking is enabled
-    if (this._configService.appFeatures().isTimeTrackingEnabled) {
+    // Track Review
+    if (this.isTrackReviewEnabled()) {
       items.push({
         type: 'route',
         id: 'track-review',
         label: T.MH.TRACK_REVIEW,
         icon: 'history',
         route: '/track-review',
+        featureConfigKey: 'isTrackReviewEnabled',
       });
     }
 

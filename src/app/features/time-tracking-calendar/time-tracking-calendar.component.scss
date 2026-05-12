@@ -23,12 +23,25 @@
 
 .week-month-selector {
   display: flex;
-  gap: 4px;
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  border: 1px solid var(--extra-border-color);
+  background: var(--bg-lighter);
 
   button {
+    border: none;
+    border-radius: 0;
+    transition: var(--transition-standard);
+    background: transparent;
+    color: var(--text-color);
+
     &.active {
       background: var(--c-primary);
       color: white;
+    }
+
+    &:first-child {
+      border-right: 1px solid var(--extra-border-color);
     }
   }
 }

@@ -107,6 +107,14 @@ export const APP_FEATURES_FORM_CFG: ConfigFormSection<AppFeaturesConfig> = {
       },
     },
     {
+      key: 'isTrackReviewEnabled',
+      type: 'slide-toggle',
+      templateOptions: {
+        label: T.GCF.APP_FEATURES.TRACK_REVIEW,
+        icon: 'history',
+      },
+    },
+    {
       key: 'isHabitsEnabled',
       type: 'slide-toggle',
       templateOptions: {

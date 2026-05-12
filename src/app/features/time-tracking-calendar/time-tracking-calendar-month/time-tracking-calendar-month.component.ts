@@ -11,6 +11,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DateTimeFormatService } from 'src/app/core/date-time-format/date-time-format.service';
 import { safeFormatDate } from 'src/app/util/safe-format-date';
 import { parseDbDateStr } from 'src/app/util/parse-db-date-str';
+import { TaskService } from '../../tasks/task.service';
 import { TimeTrackingDayData, TimeTrackingEvent } from '../time-tracking-calendar.model';
 import {
   formatMsToShortTimeString,
@@ -28,6 +29,7 @@ import {
 })
 export class TimeTrackingCalendarMonthComponent {
   private _dateTimeFormatService = inject(DateTimeFormatService);
+  private _taskService = inject(TaskService);
 
   daysData = input<Map<string, TimeTrackingDayData>>(new Map());
   daysToShow = input<string[]>([]);
@@ -124,4 +126,8 @@ export class TimeTrackingCalendarMonthComponent {
   }
 
   readonly maxVisibleEvents = 4;
+
+  onEventClick(event: TimeTrackingEvent): void {
+    this._taskService.setSelectedId(event.task.id);
+  }
 }
