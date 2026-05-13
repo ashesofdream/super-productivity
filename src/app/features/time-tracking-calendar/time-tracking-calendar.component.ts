@@ -4,8 +4,10 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { fromEvent, from, Observable } from 'rxjs';
 import { debounceTime, map, startWith } from 'rxjs/operators';
@@ -37,6 +39,7 @@ import { TimeTrackingCalendarWeekComponent } from './time-tracking-calendar-week
 import { TimeTrackingCalendarMonthComponent } from './time-tracking-calendar-month/time-tracking-calendar-month.component';
 import { T } from '../../t.const';
 import { Task, TaskArchive } from '../tasks/task.model';
+import { SCHEDULE_CONSTANTS } from '../schedule/schedule.constants';
 
 @Component({
   selector: 'time-tracking-calendar',
@@ -71,6 +74,9 @@ export class TimeTrackingCalendarComponent {
   private _taskArchiveService = inject(TaskArchiveService);
   private _timeTrackingCalendarService = inject(TimeTrackingCalendarService);
 
+  // Scroll wrapper reference for horizontal scroll positioning
+  private _scrollWrapperEl = viewChild.required<ElementRef<HTMLElement>>('scrollWrapper');
+
   // View mode
   private _currentTimeViewMode = computed(() => this._layoutService.selectedTimeView());
   isMonthView = computed(() => this._currentTimeViewMode() === 'month');
@@ -92,6 +98,25 @@ export class TimeTrackingCalendarComponent {
     ),
     { initialValue: { width: window.innerWidth, height: window.innerHeight } },
   );
+
+  // Horizontal scroll mode for mobile
+  shouldEnableHorizontalScroll = computed(() => {
+    const selectedView = this._currentTimeViewMode();
+    // Only enable horizontal scroll for week view when viewport is narrow
+    if (selectedView !== 'week') {
+      return false;
+    }
+    // Enable scroll when viewport is smaller than what's needed for 7 days
+    return this._windowSize().width < SCHEDULE_CONSTANTS.HORIZONTAL_SCROLL_THRESHOLD;
+  });
+
+  // Track if user has scrolled horizontally (for sticky time column background)
+  isHScrolled = signal(false);
+
+  onScrollWrapperScroll(event: Event): void {
+    const el = event.target as HTMLElement;
+    this.isHScrolled.set(el.scrollLeft > 0);
+  }
 
   // Number of days/weeks to show
   private _daysToShowCount = computed(() => {
@@ -207,13 +232,25 @@ export class TimeTrackingCalendarComponent {
 
   totalTimeFormatted = computed(() => formatMsToTimeString(this.totalTimeForRange()));
 
+  // Track if we've already scrolled to avoid repeated scrolling
+  private _hasScrolledToRight = false;
+
   constructor() {
     // Restore view mode from localStorage
     this._layoutService.selectedTimeView.set(this._getTimeView());
 
-    effect(() => {
-      if (!this.isMonthView()) {
-        // Could scroll to work start when switching to week view
+    // Scroll to right (most recent day) when horizontal scroll mode is first enabled
+    effect((onCleanup) => {
+      const isHorizontalScroll = this.shouldEnableHorizontalScroll();
+      if (isHorizontalScroll && !this._hasScrolledToRight) {
+        this._hasScrolledToRight = true;
+        const timeoutId = setTimeout(() => {
+          const el = this._scrollWrapperEl()?.nativeElement;
+          if (el) {
+            el.scrollLeft = el.scrollWidth - el.clientWidth;
+          }
+        }, 0);
+        onCleanup(() => clearTimeout(timeoutId));
       }
     });
   }

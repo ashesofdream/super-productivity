@@ -13,6 +13,9 @@
 </header>
 
 <div class="grid-container">
+  <!-- Time column background for horizontal scroll mode -->
+  <div class="time-column-bg"></div>
+
   <!-- Time column - only show every hour -->
   @for (time of times(); track $index) {
     @if ($index % FH === 0) {

@@ -51,8 +51,10 @@
 </header>
 
 <div
-  class="calendar-content"
-  [class.month-view]="isMonthView()"
+  #scrollWrapper
+  class="scroll-wrapper"
+  [attr.data-horizontal-scroll]="shouldEnableHorizontalScroll() || null"
+  (scroll)="onScrollWrapperScroll($event)"
 >
   @if (isMonthView()) {
     <time-tracking-calendar-month
@@ -67,6 +69,8 @@
       [daysToShow]="daysToShow()"
       [todayDateStr]="_todayDateStr()"
       [allTasks]="allTasks()"
+      [isHorizontalScrollMode]="shouldEnableHorizontalScroll()"
+      [isHScrolled]="isHScrolled()"
     ></time-tracking-calendar-week>
   }
 </div>

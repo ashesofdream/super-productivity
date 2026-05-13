@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { LocaleDatePipe } from 'src/app/ui/pipes/locale-date.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -17,12 +18,18 @@ import { Task } from '../../tasks/task.model';
   templateUrl: './time-tracking-calendar-week.component.html',
   styleUrl: './time-tracking-calendar-week.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[attr.data-horizontal-scroll]': 'isHorizontalScrollMode() || null',
+    '[attr.data-hscrolled]': 'isHScrolled() || null',
+  },
 })
 export class TimeTrackingCalendarWeekComponent {
   daysData = input<Map<string, TimeTrackingDayData>>(new Map());
   daysToShow = input<string[]>([]);
   todayDateStr = input<string>('');
   allTasks = input<Task[]>([]);
+  isHorizontalScrollMode = input(false);
+  isHScrolled = input(false);
 
   protected readonly FH = FH;
   // Total rows for 24 hours

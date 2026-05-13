@@ -20,6 +20,64 @@
     --schedule-day-width: 120px;
     --schedule-row-height: var(--schedule-row-height-mobile);
   }
+
+  // Horizontal scroll mode for mobile
+  &[data-horizontal-scroll] {
+    .week-header {
+      width: fit-content;
+      min-width: 100%;
+      grid-template-columns: var(--schedule-time-width) repeat(
+          var(--nr-of-days),
+          minmax(var(--schedule-day-width), 1fr)
+        );
+
+      .filler {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        @include extraBorder('-right');
+      }
+
+      .filler + .day {
+        border-left: 0;
+      }
+    }
+
+    .grid-container {
+      grid-template-columns: var(--schedule-time-width) repeat(
+          var(--nr-of-days),
+          minmax(var(--schedule-day-width), 1fr)
+        );
+      width: fit-content;
+      min-width: 100%;
+    }
+
+    .time-column-bg {
+      display: block;
+      grid-column: 1;
+      grid-row: 1 / -1;
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      border-right: 1px solid var(--grid-color);
+      pointer-events: none;
+    }
+
+    .row + .col {
+      border-left: 0;
+    }
+
+    .time {
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: var(--bg-lighter);
+    }
+
+    &[data-hscrolled] .time-column-bg {
+      background: var(--bg-lighter);
+    }
+  }
 }
 
 .week-header {
@@ -82,6 +140,11 @@
   text-align: center;
   width: 100%;
   box-sizing: border-box;
+}
+
+// Time column background (hidden by default, shown in horizontal scroll mode)
+.time-column-bg {
+  display: none;
 }
 
 .time {
