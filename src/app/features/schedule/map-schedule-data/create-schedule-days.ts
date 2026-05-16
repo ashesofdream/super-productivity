@@ -120,9 +120,11 @@ export const createScheduleDays = (
           return isTaskOnOrAfterDay(task, dayStartTime);
         });
 
-    const plannedForDayTasks = (plannerDayMap[dayDate] || []).map((t) =>
-      asPlannedForDayTask(t, dayDate),
-    );
+    // Filter out tasks with dueWithTime as they are already handled as ScheduledTask
+    // in createBlockedBlocksByDayMap, to avoid duplicate display
+    const plannedForDayTasks = (plannerDayMap[dayDate] || [])
+      .filter((t) => typeof t.dueWithTime !== 'number')
+      .map((t) => asPlannedForDayTask(t, dayDate));
     const flowTasksForDay = uniqueTasksById([
       ...filteredFlowTasks.flatMap((task): ScheduleFlowTask[] => {
         if (isPlannedForDayTask(task)) {
