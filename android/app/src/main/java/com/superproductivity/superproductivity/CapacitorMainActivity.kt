@@ -188,13 +188,27 @@ class CapacitorMainActivity : BridgeActivity() {
             rootView.getWindowVisibleDisplayFrame(rect)
             val screenHeight = rootView.rootView.height
 
+            // Get navigation bar height to subtract from keypad height
+            val navBarHeight = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+                windowManager.currentWindowMetrics.windowInsets
+                    .getInsets(android.view.WindowInsets.Type.navigationBars()).bottom
+            } else {
+                @Suppress("DEPRECATION")
+                val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+                if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+            }
+
             val keypadHeight = screenHeight - rect.bottom
+            val actualKeyboardHeight = maxOf(0, keypadHeight - navBarHeight)
+
             if (keypadHeight > screenHeight * 0.15) {
                 // keyboard is opened
                 callJSInterfaceFunctionIfExists("next", "isKeyboardShown$", "true")
+                callJSInterfaceFunctionIfExists("next", "keyboardHeight$", actualKeyboardHeight.toString())
             } else {
                 // keyboard is closed
                 callJSInterfaceFunctionIfExists("next", "isKeyboardShown$", "false")
+                callJSInterfaceFunctionIfExists("next", "keyboardHeight$", "0")
             }
         }
 

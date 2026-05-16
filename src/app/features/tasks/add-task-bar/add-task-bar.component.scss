@@ -31,8 +31,10 @@
   }
 }
 
-:host-context(.isTouchOnly).global {
-  top: auto;
+// Touch-only devices: position add-task-bar above keyboard
+// The !important is needed to override the top property set above
+:host.global:host-context(.isTouchOnly) {
+  top: auto !important;
   bottom: calc(var(--keyboard-height) + var(--s));
   transition: bottom var(--transition-duration-m) ease-out;
 }

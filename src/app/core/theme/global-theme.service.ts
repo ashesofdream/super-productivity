@@ -338,6 +338,17 @@ export class GlobalThemeService {
     }
 
     if (IS_ANDROID_WEB_VIEW) {
+      androidInterface.keyboardHeight$
+        .pipe(takeUntilDestroyed(this._destroyRef))
+        .subscribe((height) => {
+          // Convert physical pixels to CSS pixels
+          const cssHeight = height / window.devicePixelRatio;
+          this.document.documentElement.style.setProperty(
+            CSS_VAR_KEYBOARD_HEIGHT,
+            `${cssHeight}px`,
+          );
+        });
+
       androidInterface.isKeyboardShown$
         .pipe(takeUntilDestroyed(this._destroyRef))
         .subscribe((isShown) => {
